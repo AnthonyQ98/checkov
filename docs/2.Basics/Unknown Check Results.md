@@ -18,6 +18,10 @@ Some policies can return **UNKNOWN** when they cannot determine pass or fail—f
 
 ## Example CLI output
 
+**CKV_AWS_140** (“Ensure that RDS global clusters are encrypted”) returns **UNKNOWN** in one specific case: when the global cluster is created from an existing cluster via `source_db_cluster_identifier`. Encryption is then inherited from the source, so the check cannot evaluate it and reports UNKNOWN. Other checks return UNKNOWN when a value depends on a variable, a plan field is not yet known, or similar.
+
+Example summary and one unknown result:
+
 ```
 terraform_plan scan results:
 
@@ -37,7 +41,7 @@ Unknown results are grouped with the rest of the checks and can be inspected to 
 For Terraform plan scans, the optional env var **`EVAL_TF_PLAN_AFTER_UNKNOWN`** enables use of the plan’s `after_unknown` section to try to resolve some values. When enabled:
 
 - Some checks that would be **UNKNOWN** may become **PASSED** or **FAILED**.
-- In other cases, a value that was previously known in the plan can be treated as unknown, so a check may move from **FAILED** to **UNKNOWN**.
+- In other cases, a value that was previously known in the plan can be treated as unknown, so a check may move from **FAILED** to **UNKNOWN**. For example, **CKV_AWS_140** (RDS global cluster encryption) returns UNKNOWN when the cluster is created from a source (`source_db_cluster_identifier`), because encryption is inherited and the check cannot evaluate it; with `EVAL_TF_PLAN_AFTER_UNKNOWN` set, that same check can also move from FAILED to UNKNOWN when the plan’s `after_unknown` marks the encryption field as unresolved.
 
 Example (sanitized; counts will vary by plan):
 
@@ -47,7 +51,7 @@ Example (sanitized; counts will vary by plan):
 | Failed | 55 | 54 |
 | Unknown | 132 | 133 |
 
-Here, one check (e.g. an encryption check on `aws_rds_global_cluster`) moved from FAILED to UNKNOWN because with after_unknown evaluation its value is treated as unresolved.
+In this example, one check (CKV_AWS_140 on an `aws_rds_global_cluster`) moved from FAILED to UNKNOWN: with `EVAL_TF_PLAN_AFTER_UNKNOWN` the plan’s `after_unknown` data caused the encryption field to be treated as unresolved, so the check correctly reports UNKNOWN instead of FAILED.
 
 To enable:
 
