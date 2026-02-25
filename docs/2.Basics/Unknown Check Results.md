@@ -7,7 +7,7 @@ nav_order: 7
 
 # Unknown Check Results
 
-Some policies can return **UNKNOWN** when they cannot determine pass or fail—for example when a value depends on a variable or a Terraform plan field is not yet known. Checkov now includes these results in the report so you can see when and where they occur.
+Some policies can return **UNKNOWN** when they cannot determine pass or fail—for example when a value depends on a variable or a Terraform plan field is not yet known. Checkov includes these results in the report so you can see exactly **which checks were not evaluated** (not passed, not failed, not skipped). That makes it easier to track gaps in coverage or follow up when a policy couldn’t run to a definite result.
 
 ## What appears in the report
 
