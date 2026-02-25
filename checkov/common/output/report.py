@@ -628,10 +628,13 @@ class Report:
         report = Report(check_type)
         report.image_cached_results = json_report['image_cached_results']
 
-        all_json_records = json_report["checks"]["passed_checks"] + \
-            json_report["checks"]["failed_checks"] + \
-            json_report["checks"]["skipped_checks"] + \
-            json_report["checks"].get("unknown_checks", [])
+        checks = json_report["checks"]
+        if "unknown_checks" not in checks:
+            checks = {**checks, "unknown_checks": []}
+        all_json_records = checks["passed_checks"] + \
+            checks["failed_checks"] + \
+            checks["skipped_checks"] + \
+            checks["unknown_checks"]
 
         for json_record in all_json_records:
             report.add_record(

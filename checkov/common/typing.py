@@ -91,7 +91,7 @@ class _ReducedScanReport(TypedDict):
     image_cached_results: list[dict[str, Any]]
 
 
-class _ReducedScanReportCheck(TypedDict, total=False):
+class _ReducedScanReportCheck(TypedDict):
     failed_checks: list[dict[str, Any]]
     passed_checks: list[dict[str, Any]]
     skipped_checks: list[dict[str, Any]]
